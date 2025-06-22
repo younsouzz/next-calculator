@@ -1,95 +1,138 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import { useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [input, setInput] = useState('');
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const handleClick = (value) => {
+    setInput((prev) => prev + value);
+  };
+
+  const handleClear = () => {
+    setInput('');
+  };
+
+  const handleCalculate = () => {
+    try {
+      // eslint-disable-next-line no-eval
+      const result = eval(input);
+      setInput(String(result));
+    } catch {
+      setInput('Error');
+    }
+  };
+
+  const isOperator = (val) => ['+', '-', '*', '/'].includes(val);
+
+  return (
+    <div style={styles.container}>
+      <input
+        style={styles.input}
+        type="text"
+        value={input}
+        readOnly
+        placeholder="0"
+      />
+      <div style={styles.buttons}>
+        {['7', '8', '9', '/'].map((btn) => (
+          <button
+            key={btn}
+            onClick={() => handleClick(btn)}
+            style={{
+              ...styles.button,
+              backgroundColor: isOperator(btn) ? '#ccc' : '#b35b00',
+              color: 'black',
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
+            {btn}
+          </button>
+        ))}
+        {['4', '5', '6', '*'].map((btn) => (
+          <button
+            key={btn}
+            onClick={() => handleClick(btn)}
+            style={{
+              ...styles.button,
+              backgroundColor: isOperator(btn) ? '#ccc' : '#b35b00',
+              color: 'black',
+            }}
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+            {btn}
+          </button>
+        ))}
+        {['1', '2', '3', '-'].map((btn) => (
+          <button
+            key={btn}
+            onClick={() => handleClick(btn)}
+            style={{
+              ...styles.button,
+              backgroundColor: isOperator(btn) ? '#ccc' : '#b35b00',
+              color: 'black',
+            }}
+          >
+            {btn}
+          </button>
+        ))}
+        {['0', '.', 'C', '+'].map((btn) => (
+          <button
+            key={btn}
+            onClick={() => (btn === 'C' ? handleClear() : handleClick(btn))}
+            style={{
+              ...styles.button,
+              backgroundColor: isOperator(btn) ? '#ccc' : '#b35b00',
+              color: 'black',
+            }}
+          >
+            {btn}
+          </button>
+        ))}
+        <button
+          onClick={handleCalculate}
+          style={{
+            ...styles.button,
+            gridColumn: 'span 4',
+            backgroundColor: '#b35b00',
+            color: 'black',
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          =
+        </button>
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    maxWidth: 320,
+    margin: '50px auto',
+    textAlign: 'center',
+    fontFamily: 'Arial, sans-serif',
+  },
+  input: {
+    width: '100%',
+    height: 60,
+    fontSize: 36,
+    marginBottom: 15,
+    padding: '0 15px',
+    textAlign: 'right',
+    borderRadius: 6,
+    border: '1px solid #ccc',
+    backgroundColor: '#fff',
+    color: 'black',
+    fontWeight: 'bold', // bold result text
+  },
+  buttons: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: 10,
+  },
+  button: {
+    fontSize: 20,
+    padding: '15px 0',
+    borderRadius: 4,
+    border: '1px solid #999',
+    cursor: 'pointer',
+  },
+};
